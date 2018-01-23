@@ -1,5 +1,6 @@
 #include "opencv2/calib3d/calib3d.hpp"
-#include "types.hpp"
+#include "opencv2/opencv.hpp"
+#include<vector>
 
 
 int main(){
@@ -20,7 +21,7 @@ pass a zero rotation vector to the routine projectPoints.
     std::vector<float> rcol3 = {0.0, 0.0, 1.0};    
     std::vector<std::vector<float>> rMatrix = {rcol1, rcol2, rcol3};
     
-    std::vector<float> tMatrix = {-170.0, -105.0, -70.0}
+    std::vector<float> tMatrix = {-170.0, -105.0, -70.0};
     
     
     //////// Camera Matrix
@@ -38,7 +39,7 @@ pass a zero rotation vector to the routine projectPoints.
   
     std::vector<cv::Point2f> imPoints; 
     
-    cv2::projectPoints(objPoints, rMatrix, tMatrix, kMatrix, NULL, imPoints);
+    cv::projectPoints(objPoints, rMatrix, tMatrix, kMatrix, NULL, imPoints);
     
     for(auto& e1: imPoints){
         std::cout << e1 << std::endl;
@@ -107,5 +108,11 @@ not create a complete projection matrix by hand, please use the routine
 projectPoints to compute the 2d projection of the given 3d point as I have
 instructed.
 */
+
+/*
+ 
+ g++ -std=c++14 q10.cpp -o q10 `pkg-config --libs opencv`
+ 
+ */
 
 
