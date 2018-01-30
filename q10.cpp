@@ -2,55 +2,42 @@
 #include "opencv2/opencv.hpp"
 #include<vector>
 
+///////////
+////
+//// Usage notes: requires c++14
+//// To complile:  g++ -std=c++14 q10.cpp -o q10 `pkg-config --libs opencv`
+
 
 int main(){
-    /*
-     I first set up K and R matrix, and T vector, along with a zero
-distortion vector; all as mats of type float (using the C++ interface for OpenCV).
-It also seems to work if they are allocated as doubles. Look at the Mat tutorial in
-OpenCV and remember to create all vectors as the appropriate sized column
-array. I declare a single 3d point which is to be projected to 2d as a
-vector<points3f> as described in the documentation for projectpoints. Since the
-rotation matrix is the identity matrix you do not need to convert this matrix to the
-rotation vector format by calling the routine Rodrigue. Instead you can simply
-pass a zero rotation vector to the routine projectPoints.
-     
-     */
-    std::vector<float> rcol1 = {1.0, 0.0, 0.0};
-    std::vector<float> rcol2 = {0.0, 1.0, 0.0};
-    std::vector<float> rcol3 = {0.0, 0.0, 1.0};    
-    std::vector<std::vector<float>> rMatrix = {rcol1, rcol2, rcol3};
+
+    //rotation matrix = I3
+    cv::Mat rMatrix = (cv::Mat_<double>(3,3) << 1, 0, 0, 0, 1, 0, 0, 0, 1);
     
-    std::vector<float> tMatrix = {-170.0, -105.0, -70.0};
+    //t matrix = [-170, -105, -70]T
+    cv::Mat tMatrix = (cv::Mat_<double>(3, 1) << -170.0, -105.0, -70.0);
     
+    // Camera Matrix - K matrix
+    // focal length: f = 500
+    // pixel sizes: sx = sy = 1
+    // (o_x, o_y> = (320,240)    
+    cv::Mat kMatrix = (cv::Mat_<double>(3,3) << -500, 0, 320, 0, -500, 240, 0, 0, 1);
     
-    //////// Camera Matrix
-    /// focal length: f = 500
-    /// pixel sizes: sx = sy = 1
-    /// (o_x, o_y> = (320,240)    
-    std::vector<float> kcol1 = {-500.0, 0.0, 0.0}; //-f/s_x, 0, 0
-    std::vector<float> kcol2 = {0.0, -500.0, 0.0}; //0, -f/s_y, 0
-    std::vector<float> kcol3 = {320.0, 240.0, 1.0}; //o_x, o_y, 1
-    std::vector<std::vector<float>> kMatrix = {kcol1, kcol2, kcol3};
-    
+    //Distortion effects, all zero
+    cv::Mat distMatrix = (cv::Mat_<double>(4,1) << 0,0,0,0);
+
     //Object point
     cv::Point3f inPoint = cv::Point3f(350.0, 220.0, 150.0);
     std::vector<cv::Point3f> objPoints = {inPoint};
-  
+    
+    //image points
     std::vector<cv::Point2f> imPoints; 
     
-    cv::projectPoints(objPoints, rMatrix, tMatrix, kMatrix, NULL, imPoints);
+    cv::projectPoints(objPoints, rMatrix, tMatrix, kMatrix, distMatrix, imPoints);
     
-    for(auto& e1: imPoints){
-        std::cout << e1 << std::endl;
-    }
-    
-    
-    /*
-    void projectPoints(InputArray objectPoints, InputArray rvec, InputArray tvec, InputArray cameraMatrix, InputArray distCoeffs, OutputArray imagePoints, OutputArray jacobian=noArray(), double aspectRatio=0 )
-    */
-    
-    
+    std::cout << "Object point: ";
+    for(auto& e1: objPoints) std::cout << e1 << std::endl;
+    std::cout << "Image point: " ;
+    for(auto& e1: imPoints) std::cout << e1 << std::endl;
     
     return 0;
 }
@@ -109,10 +96,9 @@ projectPoints to compute the 2d projection of the given 3d point as I have
 instructed.
 */
 
-/*
+
  
- g++ -std=c++14 q10.cpp -o q10 `pkg-config --libs opencv`
- 
- */
+
+
 
 
