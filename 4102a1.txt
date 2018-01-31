@@ -1,0 +1,2 @@
+Object point: [350, 220, 150]
+Image point: [-805, -478.75]

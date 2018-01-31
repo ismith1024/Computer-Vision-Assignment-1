@@ -1,6 +1,8 @@
 #include "opencv2/calib3d/calib3d.hpp"
 #include "opencv2/opencv.hpp"
 #include<vector>
+#include<iostream>
+#include<fstream>
 
 ///////////
 ////
@@ -9,6 +11,10 @@
 
 
 int main(){
+    
+    std::ofstream outfile;
+    outfile.open ("4102a1.txt");
+    
 
     //rotation matrix = I3
     cv::Mat rMatrix = (cv::Mat_<double>(3,3) << 1, 0, 0, 0, 1, 0, 0, 0, 1);
@@ -35,9 +41,19 @@ int main(){
     cv::projectPoints(objPoints, rMatrix, tMatrix, kMatrix, distMatrix, imPoints);
     
     std::cout << "Object point: ";
-    for(auto& e1: objPoints) std::cout << e1 << std::endl;
+    outfile << "Object point: ";
+    for(auto& e1: objPoints) {
+        std::cout << e1 << std::endl;
+        outfile << e1 << std::endl;
+    }
     std::cout << "Image point: " ;
-    for(auto& e1: imPoints) std::cout << e1 << std::endl;
+    outfile << "Image point: " ;
+    for(auto& e1: imPoints){
+        std::cout << e1 << std::endl;
+        outfile << e1 << std::endl;
+    }
+    
+    outfile.close();
     
     return 0;
 }
